@@ -14,13 +14,13 @@ public class FourierTest {
         Complex[] input = new Complex[5];
         Transforms.fft(input);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void fftZeroLengthInputTest() {
         Complex[] input = new Complex[0];
         Transforms.fft(input);
     }
-    
+
     @Test
     public void fftTest() {
         Complex[] input = new Complex[8];
@@ -45,7 +45,7 @@ public class FourierTest {
             assertTrue(Complex.equals(input[i], result[i], 1E-3));
         }
     }
-    
+
     @Test
     public void inverseFftTest() {
         Complex[] input = new Complex[8];
