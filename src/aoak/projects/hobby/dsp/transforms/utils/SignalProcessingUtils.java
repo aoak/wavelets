@@ -48,4 +48,20 @@ public class SignalProcessingUtils {
         }
         return qmfFilter;
     }
+
+    /**
+     * Returns the reverse of the given vector. Does not alter the input array.
+     * @param filter
+     * @return
+     */
+    public static Double[] getReverse(Double[] filter) {
+        if (filter == null) {
+            throw new IllegalArgumentException("Input array has to be non null, non empty");
+        }
+        Double[] reverse = new Double[filter.length];
+        for (int i = 0, N = filter.length; i < N; i++) {
+            reverse[N-1-i] = filter[i];
+        }
+        return reverse;
+    }
 }
