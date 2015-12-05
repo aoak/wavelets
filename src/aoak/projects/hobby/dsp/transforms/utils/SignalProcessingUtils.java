@@ -2,6 +2,9 @@ package aoak.projects.hobby.dsp.transforms.utils;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.math3.complex.Complex;
+
 import com.google.common.collect.Iterables;
 
 public class SignalProcessingUtils {
@@ -63,5 +66,26 @@ public class SignalProcessingUtils {
             reverse[N-1-i] = filter[i];
         }
         return reverse;
+    }
+
+    /**
+     * Returns L2 norm of complex vector i.e. sqrt(sum(abs(vector) * abs(vector)))
+     * @param vectorArray
+     * @return
+     */
+    public static double getNorm(Complex[] vectorArray) {
+        if (vectorArray == null || vectorArray.length == 0) {
+            throw new IllegalArgumentException("Input array has to be non null, non empty");
+        }
+        List<Complex> vector = Arrays.asList(vectorArray);
+        if (vector.size() == 1) {
+            return Iterables.getOnlyElement(vector).abs();
+        }
+        return vector.
+                parallelStream().
+                map(ele -> ele.abs() * ele.abs()).
+                reduce((ele1, ele2) -> ele1 + ele2).
+                map(o -> Math.sqrt(o)).
+                get();
     }
 }
