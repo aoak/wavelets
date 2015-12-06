@@ -1,6 +1,7 @@
 package aoak.projects.hobby.dsp.transforms.utils;
 
 import java.util.Arrays;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 public class ArrayUtils {
@@ -38,6 +39,28 @@ public class ArrayUtils {
         Double[] result = Arrays.copyOf(array, array.length + paddingLength);
         for (int i = array.length; i < result.length; i++) {
             result[i] = pad;
+        }
+        return result;
+    }
+
+    /**
+     * Returns a new array whose each element corresponds to result of applying
+     * the function on corresponding elements of input arrays. For example, if
+     * function is addition, returns element by element addition.
+     * More specifically, it does function(smallerArrayEle, longerArrayEle). This
+     * can matter in case function is not commutative.
+     * @param array1
+     * @param array2
+     * @param function
+     * @return
+     */
+    public static <T> T[] merge(T[] array1, T[] array2, BinaryOperator<T> function) {
+        T[] smallerArray = array1.length < array2.length ? array1 : array2;
+        T[] largerArray = array1.length < array2.length ? array2 : array1;
+
+        T[] result = Arrays.copyOf(largerArray, largerArray.length);
+        for (int i = 0; i < smallerArray.length; i++) {
+            result[i] = function.apply(smallerArray[i], largerArray[i]);
         }
         return result;
     }

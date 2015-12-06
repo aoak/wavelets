@@ -129,9 +129,9 @@ public class SignalProcessingUtils {
             throw new IllegalArgumentException("Padding interval needs to be at least 2 (every other sample)");
         }
 
-        int samplesToInsert = signal.length / padInterval;
+        int samplesToInsert = signal.length / (padInterval - 1);
         Complex[] result = new Complex[signal.length + samplesToInsert];
-        for (int i = 0, j = 0; i < signal.length && j < result.length; j++) {
+        for (int i = 0, j = 0; i < signal.length + 1 && j < result.length; j++) {
             if ((j+1) % padInterval == 0) {
                 result[j] = Complex.ZERO;
             } else {

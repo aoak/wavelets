@@ -38,10 +38,10 @@ public class WaveletTransformTest {
         input[7] = new Complex(-0.7071);
 
         double norm = SignalProcessingUtils.getNorm(WaveletTransform.DB3);
-        Double[] filter = ArrayUtils.map(WaveletTransform.DB3, ele -> ele/norm);
-        filter = SignalProcessingUtils.getReverse(filter);
+        Double[] filterR = ArrayUtils.map(WaveletTransform.DB3, ele -> ele/norm);
+        Double[] filter = SignalProcessingUtils.getReverse(filterR);
 
         Complex[][] trans = WaveletTransform.dwt(input, filter);
-        // WaveletTransform.iDwt(trans[0], trans[1], filter);
+        WaveletTransform.iDwt(trans[0], trans[1], filterR);
     }
 }

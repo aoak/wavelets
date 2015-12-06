@@ -1,4 +1,6 @@
-package aoak.projects.hobby.dsp.transforms;
+package aoak.projects.hobby.dsp.transforms.utils;
+
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,5 +23,12 @@ public class ArrayUtilsTest {
         Integer[] exp = new Integer[] {1, 4, 9, 16};
         Assert.assertArrayEquals(exp, ArrayUtils.map(in, ele -> ele * ele));
         Assert.assertArrayEquals(inCopy, in);
+    }
+
+    @Test
+    public void mergeTest() {
+        Double[] in1 = new Double[] {1.0, 2.0, 3.0};
+        Double[] in2 = new Double[] {2.0, 3.0, 4.0};
+        System.out.println(Arrays.asList(ArrayUtils.merge(in1, in2, (e1, e2) -> Double.sum(e1, e2))));
     }
 }

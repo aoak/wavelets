@@ -1,11 +1,11 @@
-package aoak.projects.hobby.dsp.transforms;
+package aoak.projects.hobby.dsp.transforms.fourier;
 
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.math3.complex.Complex;
 import org.junit.Test;
 
-import aoak.projects.hobby.dsp.transforms.Transforms;
+import aoak.projects.hobby.dsp.transforms.fourier.Transforms;
 
 public class FourierTest {
 

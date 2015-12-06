@@ -1,4 +1,4 @@
-package aoak.projects.hobby.dsp.transforms;
+package aoak.projects.hobby.dsp.transforms.fourier;
 
 import org.apache.commons.math3.complex.Complex;
 
