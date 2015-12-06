@@ -116,4 +116,28 @@ public class SignalProcessingUtils {
         }
         return result;
     }
+
+    /**
+     * Adds a zero at every padInterval samples. For example, setting padInteval
+     * to 2 means every other sample is 0
+     * @param signal
+     * @param padInterval
+     * @return
+     */
+    public static Complex[] upsample(Complex[] signal, int padInterval) {
+        if (padInterval < 2) {
+            throw new IllegalArgumentException("Padding interval needs to be at least 2 (every other sample)");
+        }
+
+        int samplesToInsert = signal.length / padInterval;
+        Complex[] result = new Complex[signal.length + samplesToInsert];
+        for (int i = 0, j = 0; i < signal.length && j < result.length; j++) {
+            if ((j+1) % padInterval == 0) {
+                result[j] = Complex.ZERO;
+            } else {
+                result[j] = signal[i++];
+            }
+        }
+        return result;
+    }
 }

@@ -4,6 +4,9 @@ import org.apache.commons.math3.complex.Complex;
 import org.junit.Assert;
 import org.junit.Test;
 
+import aoak.projects.hobby.dsp.transforms.utils.ArrayUtils;
+import aoak.projects.hobby.dsp.transforms.utils.SignalProcessingUtils;
+
 public class WaveletTransformTest {
 
     @Test
@@ -20,5 +23,25 @@ public class WaveletTransformTest {
         e[2] = new Complex(37);
 
         Assert.assertArrayEquals(e, WaveletTransform.convolveAndSubsample(s, h));
+    }
+
+    @Test
+    public void dwtTest() {
+        Complex[] input = new Complex[8];
+        input[0] = Complex.ZERO;
+        input[1] = new Complex(0.7071);
+        input[2] = new Complex(1);
+        input[3] = new Complex(0.7071);
+        input[4] = Complex.ZERO;
+        input[5] = new Complex(-0.7071);
+        input[6] = new Complex(-1);
+        input[7] = new Complex(-0.7071);
+
+        double norm = SignalProcessingUtils.getNorm(WaveletTransform.DB3);
+        Double[] filter = ArrayUtils.map(WaveletTransform.DB3, ele -> ele/norm);
+        filter = SignalProcessingUtils.getReverse(filter);
+
+        Complex[][] trans = WaveletTransform.dwt(input, filter);
+        // WaveletTransform.iDwt(trans[0], trans[1], filter);
     }
 }
