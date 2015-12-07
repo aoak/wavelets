@@ -47,7 +47,7 @@ public class SignalProcessingUtils {
         Double[] qmfFilter = new Double[filter.length];
 
         for (int i = 0, N = filter.length; i < N; i++) {
-            qmfFilter[N -1 - i] = (i % 2 == 0 ? 1 : -1) * filter[i];
+            qmfFilter[i] = (i % 2 == 0 ? 1 : -1) * filter[N-i-1];
         }
         return qmfFilter;
     }

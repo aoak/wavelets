@@ -2,8 +2,6 @@ package aoak.projects.hobby.dsp.transforms.wavelet;
 
 import static aoak.projects.hobby.dsp.transforms.utils.SignalProcessingUtils.*;
 
-import java.util.Arrays;
-
 import org.apache.commons.math3.complex.Complex;
 
 import aoak.projects.hobby.dsp.transforms.utils.ArrayUtils;
@@ -53,8 +51,7 @@ public class WaveletTransform {
 
         approx = upsample(approx, 2);
         details = upsample(details, 2);
-        Complex[] regeneratedSignal = ArrayUtils.merge(convolve(approx, lpFilter), convolve(approx, hpFilter), (a, b) -> a.add(b));
-        System.out.println(Arrays.asList(regeneratedSignal));
+        Complex[] regeneratedSignal = ArrayUtils.merge(convolve(approx, lpFilter), convolve(details, hpFilter), (a, b) -> a.add(b));
         return regeneratedSignal;
     }
 
