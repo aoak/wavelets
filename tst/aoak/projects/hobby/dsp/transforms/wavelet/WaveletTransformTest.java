@@ -50,7 +50,7 @@ public class WaveletTransformTest {
 
     @Test
     public void longDwtTest() throws IOException {
-         List<Complex> sigFile = Files.readAllLines((Paths.get("/home/aniket/Dropbox/signal.txt"))).
+         List<Complex> sigFile = Files.readAllLines((Paths.get("tst/aoak/projects/hobby/dsp/transforms/wavelet/data/sine.txt"))).
                                      stream().
                                      map(val -> new Complex(Double.valueOf(val))).
                                      collect(Collectors.toList());
