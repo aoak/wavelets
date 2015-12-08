@@ -5,10 +5,23 @@ import static aoak.projects.hobby.dsp.transforms.utils.SignalProcessingUtils.*;
 import org.apache.commons.math3.complex.Complex;
 
 import aoak.projects.hobby.dsp.transforms.utils.ArrayUtils;
+import aoak.projects.hobby.dsp.transforms.utils.SignalProcessingUtils;
 
 public class WaveletTransform {
 
-    public static final Double[] DB3 = new Double[] {0.2352, 0.5706, 0.3252, -0.0955, -0.0604, 0.0249};
+    /**
+     * Calculate discrete wavelet transform using given wavelet to construct
+     * QMF pair
+     * @param signal
+     * @param wavelet
+     * @return
+     */
+    public static Complex[][] dwt(Complex[] signal, Wavelet wavelet) {
+        Double[] waveletCoeffs = wavelet.getWavelet();
+        double norm = SignalProcessingUtils.getNorm(waveletCoeffs);
+        Double[] lo_D = SignalProcessingUtils.getReverse(ArrayUtils.mapInPlace(waveletCoeffs, ele -> ele/norm));
+        return dwt(signal, lo_D);
+    }
 
     /**
      * Calculate discrete wavelet transform by convolution and sub-sampling
@@ -35,6 +48,21 @@ public class WaveletTransform {
         result[0] = convolveAndSubsample(signal, lpFilter);
         result[1] = convolveAndSubsample(signal, hpFilter);
         return result;
+    }
+
+    /**
+     * Compute inverse dwt from given approximation, and details using the given
+     * wavelet to construct reconstruction QMF filter pair
+     * @param approx
+     * @param details
+     * @param wavelet
+     * @return
+     */
+    public static Complex[] iDwt(Complex[] approx, Complex[] details, Wavelet wavelet) {
+        Double[] waveletCoeffs = wavelet.getWavelet();
+        double norm = SignalProcessingUtils.getNorm(waveletCoeffs);
+        Double[] lo_R = ArrayUtils.mapInPlace(waveletCoeffs, ele -> ele/norm);
+        return iDwt(approx, details, lo_R);
     }
 
     /**
