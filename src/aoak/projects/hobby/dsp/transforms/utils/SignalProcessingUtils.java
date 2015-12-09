@@ -57,11 +57,11 @@ public class SignalProcessingUtils {
      * @param filter
      * @return
      */
-    public static Double[] getReverse(Double[] filter) {
+    public static <T> T[] getReverse(T[] filter) {
         if (filter == null) {
             throw new IllegalArgumentException("Input array has to be non null, non empty");
         }
-        Double[] reverse = new Double[filter.length];
+        T[] reverse = Arrays.copyOf(filter, filter.length);
         for (int i = 0, N = filter.length; i < N; i++) {
             reverse[N-1-i] = filter[i];
         }
@@ -95,7 +95,7 @@ public class SignalProcessingUtils {
      * @param filter
      * @return Resultant array of length N+K-1.
      */
-    public static Complex[] convolve(Complex[] signal, Double[] filter) {
+    public static Complex[] conv(Complex[] signal, Double[] filter) {
         int N = signal.length;
         int K = filter.length;
 
@@ -115,6 +115,21 @@ public class SignalProcessingUtils {
             }
         }
         return result;
+    }
+
+    public static Complex[] xcorr(Complex[] signal1, Complex[] signal2) {
+        /* Cross correlation is time flipped convolution
+         */
+        signal2 = getReverse(signal2);
+        Double[] secondSig = new Double[signal2.length];
+        for (int i = 0; i < secondSig.length; i++) {
+            secondSig[i] = signal2[i].getReal();
+        }
+        return conv(signal1, secondSig);
+    }
+
+    public static Complex[] autocorr(Complex[] signal) {
+        return xcorr(signal, signal);
     }
 
     /**

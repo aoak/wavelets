@@ -73,7 +73,7 @@ public class WaveletTransform {
 
         approx = upsample(approx, 2);
         details = upsample(details, 2);
-        Complex[] regeneratedSignal = ArrayUtils.merge(convolve(approx, lpFilter), convolve(details, hpFilter), (a, b) -> a.add(b));
+        Complex[] regeneratedSignal = ArrayUtils.merge(conv(approx, lpFilter), conv(details, hpFilter), (a, b) -> a.add(b));
         return regeneratedSignal;
     }
 
