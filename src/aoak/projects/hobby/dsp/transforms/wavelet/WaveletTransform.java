@@ -32,14 +32,8 @@ public class WaveletTransform {
      * @return
      */
     public static Complex[][] dwt(Complex[] signal, Double[] lpFilter) {
-        int N = signal.length;
 
-        // check if N is power of two. Throw up if it is not for now
-        if (N == 0 || ((N & -N) != N)) {
-            throw new IllegalArgumentException("Length of the input array needs to be a non-zero power of 2. Received " + N);
-        }
-
-        int numberOfDecompositions = 2; //(int) (Math.log(N)/Math.log(2));
+        int numberOfDecompositions = 2;
         Complex[][] result = new Complex[numberOfDecompositions][];
 
         // now get the QMF pair filter
