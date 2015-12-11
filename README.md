@@ -3,6 +3,7 @@ Hobby code related to Digital Signal Processing.
 
 ###Functionality
 Current functionality is:
+
 1. 1-D Fast Fourier transform and inverse
 2. 1-D Discrete wavelet transform and inverse
 3. Convolution
@@ -12,6 +13,7 @@ Current functionality is:
 
 
 Utility functions include 
+
 1. Calculating L2 norm
 2. Upsampling
 3. Array operations like padding, element wise operations
