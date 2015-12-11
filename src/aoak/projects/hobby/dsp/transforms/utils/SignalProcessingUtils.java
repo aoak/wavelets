@@ -109,7 +109,7 @@ public class SignalProcessingUtils {
         /* filter[k], signal[n-k], result[n] result length is k+n-1
          * sum over all k
          */
-        for (int n = 0; n < N + K -1; n++) { // 0-6
+        for (int n = 0; n < N + K -1; n++) {
             for (int k = Math.max(0, n-N+1); k <= Math.min(n, K-1); k++) {
                 result[n] = result[n].add(signal[n-k].multiply(filter[k]));
             }
@@ -117,6 +117,12 @@ public class SignalProcessingUtils {
         return result;
     }
 
+    /**
+     * Compute cross correlation between two signals
+     * @param signal1
+     * @param signal2
+     * @return
+     */
     public static Complex[] xcorr(Complex[] signal1, Complex[] signal2) {
         /* Cross correlation is time flipped convolution
          */
@@ -128,8 +134,37 @@ public class SignalProcessingUtils {
         return conv(signal1, secondSig);
     }
 
+    /**
+     * Compute autocorrelation of the signal
+     * @param signal
+     * @return
+     */
     public static Complex[] autocorr(Complex[] signal) {
         return xcorr(signal, signal);
+    }
+
+    /**
+     * Calculate cross correlation between two signals when the second signal is shifted
+     * by shift places to the right. The shift can be negative in which case the second
+     * signal is shifted to the left
+     * @param signal1
+     * @param signal2
+     * @param shift
+     * @return
+     */
+    public static Complex xcorr(Complex[] signal1, Complex[] signal2, int shift) {
+        if (shift < 0) {
+            return xcorr(signal2, signal1, -shift);
+        }
+        Complex result = Complex.ZERO;
+        if (shift >= signal1.length) {
+            return result;
+        }
+
+        for (int i = shift; i < signal1.length && i - shift < signal2.length; i++) {
+            result = result.add(signal1[i].multiply(signal2[i-shift]));
+        }
+        return result;
     }
 
     /**

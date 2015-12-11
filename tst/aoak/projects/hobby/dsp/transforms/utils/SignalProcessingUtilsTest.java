@@ -1,10 +1,9 @@
 package aoak.projects.hobby.dsp.transforms.utils;
 
 import static org.junit.Assert.assertEquals;
+import static aoak.projects.hobby.dsp.transforms.utils.SignalProcessingUtils.*;
 
 import java.io.IOException;
-import java.util.Arrays;
-
 import org.apache.commons.math3.complex.Complex;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,14 +14,14 @@ public class SignalProcessingUtilsTest {
     public void normTest() {
         // db3 scaling filter as a vector
         Double[] vec = new Double[] {0.2352, 0.5706, 0.3252, -0.0955, -0.0604, 0.0249};
-        assertEquals(0.7071, SignalProcessingUtils.getNorm(vec), 1E-2);
+        assertEquals(0.7071, getNorm(vec), 1E-2);
     }
 
     @Test
     public void qmfTest() {
         Double[] vec = new Double[] {0.2352, 0.5706, 0.3252, -0.0955, -0.0604, 0.0249};
         Double[] ex = new Double[] {0.0249, 0.0604, -0.0955, -0.3252, 0.5706, -0.2352};
-        Double[] qmf = SignalProcessingUtils.getQMF(vec);
+        Double[] qmf = getQMF(vec);
         Assert.assertArrayEquals(ex, qmf);
     }
 
@@ -36,7 +35,7 @@ public class SignalProcessingUtilsTest {
         input[3] = new Complex(-0.0955);
         input[4] = new Complex(-0.0604);
         input[5] = new Complex(0.0249);
-        assertEquals(0.7071, SignalProcessingUtils.getNorm(input), 1E-2);
+        assertEquals(0.7071, getNorm(input), 1E-2);
     }
 
     @Test
@@ -55,7 +54,7 @@ public class SignalProcessingUtilsTest {
         e[4] = new Complex(37);
         e[5] = new Complex(24);
 
-        Assert.assertArrayEquals(e, SignalProcessingUtils.conv(s, h));
+        Assert.assertArrayEquals(e, conv(s, h));
     }
 
     @Test
@@ -81,7 +80,7 @@ public class SignalProcessingUtilsTest {
         ex[4] = new Complex(15);
         ex[5] = new Complex(32);
         ex[6] = new Complex(15);
-        Assert.assertArrayEquals(ex, SignalProcessingUtils.xcorr(s1, s2));
+        Assert.assertArrayEquals(ex, xcorr(s1, s2));
     }
 
     @Test
@@ -104,6 +103,37 @@ public class SignalProcessingUtilsTest {
         ex[6] = new Complex(26);
         ex[7] = new Complex(14);
         ex[8] = new Complex(5);
-        Assert.assertArrayEquals(ex, SignalProcessingUtils.autocorr(s));
+        Assert.assertArrayEquals(ex, autocorr(s));
+    }
+
+    @Test
+    public void xcorrShiftTest() throws IOException {
+
+        Complex[] s = new Complex[5];
+        s[0] = new Complex(1);
+        s[1] = new Complex(2);
+        s[2] = new Complex(3);
+        s[3] = new Complex(4);
+        s[4] = new Complex(5);
+
+        assertEquals(new Complex(40), xcorr(s, s, 1));
+    }
+
+    @Test
+    public void xcorrNegShiftTest() throws IOException {
+
+        Complex[] s1 = new Complex[5];
+        s1[0] = new Complex(1);
+        s1[1] = new Complex(2);
+        s1[2] = new Complex(3);
+        s1[3] = new Complex(4);
+        s1[4] = new Complex(5);
+
+        Complex[] s2 = new Complex[3];
+        s2[0] = new Complex(3);
+        s2[1] = new Complex(4);
+        s2[2] = new Complex(-2);
+
+        assertEquals(new Complex(-2), xcorr(s1, s2, -2));
     }
 }
