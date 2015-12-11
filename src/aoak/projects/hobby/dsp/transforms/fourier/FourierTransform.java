@@ -7,7 +7,7 @@ import org.apache.commons.math3.complex.Complex;
  * @author aniket
  *
  */
-public class Transforms {
+public class FourierTransform {
 
     /**
      * Inverse FFT using Cooley-Tukey algorithm.

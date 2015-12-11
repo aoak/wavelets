@@ -10,7 +10,7 @@ import org.apache.commons.math3.complex.Complex;
 import org.junit.Assert;
 import org.junit.Test;
 
-import aoak.projects.hobby.dsp.transforms.utils.PlottingUtils;
+import aoak.projects.hobby.dsp.utils.PlottingUtils;
 
 public class WaveletTransformTest {
 

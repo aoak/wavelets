@@ -1,4 +1,4 @@
-package aoak.projects.hobby.dsp.transforms.utils;
+package aoak.projects.hobby.dsp.utils;
 
 import java.io.File;
 import java.io.IOException;

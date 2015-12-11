@@ -1,11 +1,11 @@
-package aoak.projects.hobby.dsp.transforms.utils;
+package aoak.projects.hobby.dsp.utils;
 
 import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import aoak.projects.hobby.dsp.transforms.utils.ArrayUtils;
+import aoak.projects.hobby.dsp.utils.ArrayUtils;
 
 public class ArrayUtilsTest {
 

@@ -1,11 +1,11 @@
 package aoak.projects.hobby.dsp.transforms.wavelet;
 
-import static aoak.projects.hobby.dsp.transforms.utils.SignalProcessingUtils.*;
+import static aoak.projects.hobby.dsp.utils.SignalProcessingUtils.*;
 
 import org.apache.commons.math3.complex.Complex;
 
-import aoak.projects.hobby.dsp.transforms.utils.ArrayUtils;
-import aoak.projects.hobby.dsp.transforms.utils.SignalProcessingUtils;
+import aoak.projects.hobby.dsp.utils.ArrayUtils;
+import aoak.projects.hobby.dsp.utils.SignalProcessingUtils;
 
 public class WaveletTransform {
 

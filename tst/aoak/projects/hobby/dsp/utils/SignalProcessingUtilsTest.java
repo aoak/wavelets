@@ -1,7 +1,7 @@
-package aoak.projects.hobby.dsp.transforms.utils;
+package aoak.projects.hobby.dsp.utils;
 
+import static aoak.projects.hobby.dsp.utils.SignalProcessingUtils.*;
 import static org.junit.Assert.assertEquals;
-import static aoak.projects.hobby.dsp.transforms.utils.SignalProcessingUtils.*;
 
 import java.io.IOException;
 import org.apache.commons.math3.complex.Complex;
