@@ -45,6 +45,35 @@ public class WaveletTransform {
     }
 
     /**
+     * Compute the discrete wavelet transform in cascaded manner. The signal
+     * is first decomposed into approximation and details. The approximations
+     * are further decomposed into lower level approximations and details. This
+     * continues until we get numLevels details and one approximation
+     * @param signal
+     * @param wavelet
+     * @param numLevels
+     * @return a two dimensional array of numLevels+1 x ... length
+     */
+    public static Complex[][] cascadedDwt(Complex[] signal, Wavelet wavelet, int numLevels) {
+
+        int numPossibleDecompositions = (int) (Math.log10(signal.length)/Math.log10(2));
+        if (numLevels > numPossibleDecompositions) {
+            throw new IllegalArgumentException("Can't decompose more than " + numPossibleDecompositions + " times");
+        }
+        Complex[][] result = new Complex[numLevels+1][];
+        for (int i = 0; i < result.length; i++) {
+            Complex[][] decomposition = dwt(signal, wavelet);
+            // preserve the details
+            result[i] = decomposition[1];
+            // decompose the approximation further
+            signal = decomposition[0];
+        }
+        // the final stage approximation
+        result[result.length-1] = signal;
+        return result;
+    }
+
+    /**
      * Compute inverse dwt from given approximation, and details using the given
      * wavelet to construct reconstruction QMF filter pair
      * @param approx
