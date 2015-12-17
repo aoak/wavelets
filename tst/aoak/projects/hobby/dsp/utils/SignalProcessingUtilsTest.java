@@ -136,4 +136,25 @@ public class SignalProcessingUtilsTest {
 
         assertEquals(new Complex(-2), xcorr(s1, s2, -2));
     }
+
+    @Test
+    public void upsampleToLengthSimpleTest() {
+        Complex[] s1 = new Complex[] {Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE};
+        Complex[] exp = new Complex[] {Complex.ONE, Complex.ZERO, Complex.ONE, Complex.ZERO, Complex.ONE, Complex.ZERO, Complex.ONE, Complex.ZERO};
+        Assert.assertArrayEquals(exp, upsampleToLength(s1, 8));
+    }
+
+    @Test
+    public void upsampleToLengthNonEvenTest() {
+        Complex[] s1 = new Complex[] {Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE};
+        Complex[] exp = new Complex[] {Complex.ONE, Complex.ZERO, Complex.ZERO, Complex.ONE, Complex.ZERO, Complex.ZERO, Complex.ONE, Complex.ZERO, Complex.ONE, Complex.ZERO};
+        Assert.assertArrayEquals(exp, upsampleToLength(s1, 10));
+    }
+
+    @Test
+    public void upsampleToLengthShortTest() {
+        Complex[] s1 = new Complex[] {Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE};
+        Complex[] exp = new Complex[] {Complex.ONE, Complex.ZERO, Complex.ONE, Complex.ZERO, Complex.ONE, Complex.ONE};
+        Assert.assertArrayEquals(exp, upsampleToLength(s1, 6));
+    }
 }

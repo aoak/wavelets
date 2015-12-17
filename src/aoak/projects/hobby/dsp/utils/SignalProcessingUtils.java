@@ -190,4 +190,57 @@ public class SignalProcessingUtils {
         }
         return result;
     }
+
+    /**
+     * Upsample the signal to be of length targetLength. This form is useful
+     * when the signal is to be upsampled to certain length.
+     * This method should never loose a sample from the input signal which
+     * can be the case with plain upsample + truncate
+     * @param signal
+     * @param targetLength
+     * @return resultant array of length targetLength
+     */
+    public static Complex[] upsampleToLength(Complex[] signal, int targetLength) {
+        if (targetLength < signal.length) {
+            throw new IllegalArgumentException("target length cannot be less than original length");
+        }
+
+        int samplesToAdd = targetLength - signal.length;
+        Complex[] result = new Complex[targetLength];
+
+        // find out how many samples we need to add after each signal sample
+        double sampleRatio = samplesToAdd / (double) signal.length;
+        int signalSamplesPerIteration = 1;
+        int additionalSamplesPerIteration = 0;
+        if (sampleRatio >= 1) {
+            additionalSamplesPerIteration = (int) Math.floor(sampleRatio);
+        }
+
+        /* because of the use of floor and possible sample ration of less then 1,
+         * we may end up appending some samples at the end.
+         * instead of that, we want to spread them out uniformly. calculate number of
+         * samples we need to spread out.
+         */
+        int numExtras = (int) ((sampleRatio % 1.0) * (signal.length));
+
+        int resultI = 0, sigI = 0;
+        while (resultI < result.length && sigI < signal.length) {
+            // add signal samples
+            for (int j = 0; j < signalSamplesPerIteration; j++, resultI++, sigI++) {
+                result[resultI] = signal[sigI];
+            }
+            // add padding samples
+            for (int j = 0; j < additionalSamplesPerIteration; j++, resultI++) {
+                result[resultI] = Complex.ZERO;
+            }
+            /* If samples to spread is non zero, then add a sample here. Only one
+             * should be enough because total number of samples to spread should
+             * never be greater than the signal length
+             */
+            if (numExtras-- > 0) {
+                result[resultI++] = Complex.ZERO;
+            }
+        }
+        return result;
+    }
 }
