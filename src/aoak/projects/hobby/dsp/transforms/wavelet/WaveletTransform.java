@@ -38,8 +38,17 @@ public class WaveletTransform {
         // now get the QMF pair filter
         Double[] hpFilter = getQMF(lpFilter);
 
+        /* To avoid border effect, pad the signal on both sides by the
+         * filter length
+         */
+        int wouldBeLength = (signal.length + lpFilter.length) / 2;
+        signal = SignalProcessingUtils.symmetricPadding(signal, lpFilter.length * 2);
         result[0] = convolveAndSubsample(signal, lpFilter);
         result[1] = convolveAndSubsample(signal, hpFilter);
+        // Now keep only the length that would have been without the padding
+        int truncLen = result[0].length - wouldBeLength;
+        result[0] = SignalProcessingUtils.symmetricTruncate(result[0], truncLen);
+        result[1] = SignalProcessingUtils.symmetricTruncate(result[1], truncLen);
         return result;
     }
 
@@ -97,14 +106,20 @@ public class WaveletTransform {
      */
     public static Complex[] iDwt(Complex[] approx, Complex[] details, Double[] lpFilter) {
 
+        if (approx.length != details.length) {
+            throw new IllegalArgumentException("approximate and detail coeff length should match");
+        }
+
         Double[] hpFilter = getQMF(lpFilter);
 
         approx = SignalProcessingUtils.upsampleWithInterpolation(approx, approx.length * 2);
         details = SignalProcessingUtils.upsampleWithInterpolation(details, details.length * 2);
-        // approx = upsample(approx, 2);
-        // details = upsample(details, 2);
-        Complex[] regeneratedSignal = ArrayUtils.merge(conv(approx, lpFilter), conv(details, hpFilter), (a, b) -> a.add(b));
-        return regeneratedSignal;
+        Complex[] regeneratedSignal = ArrayUtils.merge(conv(approx, lpFilter),
+                                                       conv(details, hpFilter),
+                                                       (a, b) -> a.add(b).divide(2));
+        /* To avoid border effect, symmetrically truncate the result on both sides. */
+        int truncLen = regeneratedSignal.length - (approx.length + 1 - lpFilter.length);
+        return SignalProcessingUtils.symmetricTruncate(regeneratedSignal, truncLen);
     }
 
     public static Complex[] waveletReconstruction(Complex[][] transform, Wavelet wavelet) {
