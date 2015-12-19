@@ -157,4 +157,25 @@ public class SignalProcessingUtilsTest {
         Complex[] exp = new Complex[] {Complex.ONE, Complex.ZERO, Complex.ONE, Complex.ZERO, Complex.ONE, Complex.ONE};
         Assert.assertArrayEquals(exp, upsampleToLength(s1, 6));
     }
+
+    @Test
+    public void interpolateToLengthSimpleTest() {
+        Complex[] s1 = new Complex[] {Complex.ONE, new Complex(2), Complex.ONE, Complex.ONE};
+        Complex[] exp = new Complex[] {Complex.ONE, new Complex(1.5), new Complex(2), new Complex(1.5), Complex.ONE, Complex.ONE, Complex.ONE, new Complex(0.5)};
+        Assert.assertArrayEquals(exp, upsampleWithInterpolation(s1, 8));
+    }
+
+    @Test
+    public void interpolateToLengthNonEvenTest() {
+        Complex[] s1 = new Complex[] {Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE};
+        Complex[] exp = new Complex[] {Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, new Complex(0.5)};
+        Assert.assertArrayEquals(exp, upsampleWithInterpolation(s1, 10));
+    }
+
+    @Test
+    public void interpolateToLengthShortTest() {
+        Complex[] s1 = new Complex[] {Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE};
+        Complex[] exp = new Complex[] {Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE};
+        Assert.assertArrayEquals(exp, upsampleWithInterpolation(s1, 6));
+    }
 }

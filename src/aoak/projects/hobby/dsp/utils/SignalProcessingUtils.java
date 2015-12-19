@@ -1,11 +1,10 @@
 package aoak.projects.hobby.dsp.utils;
 
+import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.function.BinaryOperator;
 import org.apache.commons.math3.complex.Complex;
-
-import com.google.common.collect.Iterables;
 
 public class SignalProcessingUtils {
 
@@ -201,6 +200,10 @@ public class SignalProcessingUtils {
      * @return resultant array of length targetLength
      */
     public static Complex[] upsampleToLength(Complex[] signal, int targetLength) {
+        return upsampleToLength(signal, targetLength, (ele1, ele2) -> Complex.ZERO);
+    }
+
+    private static Complex[] upsampleToLength(Complex[] signal, int targetLength, BinaryOperator<Complex> function) {
         if (targetLength < signal.length) {
             throw new IllegalArgumentException("target length cannot be less than original length");
         }
@@ -231,16 +234,45 @@ public class SignalProcessingUtils {
             }
             // add padding samples
             for (int j = 0; j < additionalSamplesPerIteration; j++, resultI++) {
-                result[resultI] = Complex.ZERO;
+                result[resultI] = function.apply(getIfPresentOrZero(signal, sigI-1),
+                                                 getIfPresentOrZero(signal, sigI));
             }
             /* If samples to spread is non zero, then add a sample here. Only one
              * should be enough because total number of samples to spread should
              * never be greater than the signal length
              */
             if (numExtras-- > 0) {
-                result[resultI++] = Complex.ZERO;
+                result[resultI++] = function.apply(getIfPresentOrZero(signal, sigI-1),
+                                                 getIfPresentOrZero(signal, sigI));
             }
         }
         return result;
+    }
+
+    /**
+     * function to check if index is within range. return requested element
+     * if it is, return 0 otherwise
+     */
+    private static Complex getIfPresentOrZero(Complex[] array, int index) {
+        if (index < 0 || index >= array.length) {
+            return Complex.ZERO;
+        }
+        return array[index];
+    }
+
+    /**
+     * Upsample the given signal adding the samples that are average of the two signal
+     * samples they are inserted between
+     * @param signal
+     * @param targetLength
+     * @return resultant array of length targetLength
+     */
+    public static Complex[] upsampleWithInterpolation(Complex[] signal, int targetLength) {
+        /* This function inserts samples that are average of two signal samples.
+         * This means 1, 2 will be 1, 1.5, 2. If two samples are added, it will be
+         * 1, 1.5, 1.5, 2. This is better than 1, 0, 0, 1 but can be better.
+         * In future, it can be improved to be 1, 1.33, 1.66, 2
+         */
+        return upsampleToLength(signal, targetLength, (ele1, ele2) -> ele1.add(ele2).divide(2));
     }
 }
