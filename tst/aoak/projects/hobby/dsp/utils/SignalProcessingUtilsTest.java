@@ -178,4 +178,13 @@ public class SignalProcessingUtilsTest {
         Complex[] exp = new Complex[] {Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE, Complex.ONE};
         Assert.assertArrayEquals(exp, upsampleWithInterpolation(s1, 6));
     }
+
+    @Test
+    public void symmetricPaddingTest() {
+        Complex[] s = new Complex[] {new Complex(1), new Complex(2), new Complex(3), new Complex(4),
+            new Complex(5)};
+        Complex[] exp = new Complex[] {new Complex(2), new Complex(1), new Complex(1), new Complex(2),
+            new Complex(3), new Complex(4), new Complex(5), new Complex(5)};
+        Assert.assertArrayEquals(exp, symmetricPadding(s, 3));
+    }
 }

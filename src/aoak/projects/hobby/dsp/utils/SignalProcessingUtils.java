@@ -275,4 +275,59 @@ public class SignalProcessingUtils {
          */
         return upsampleToLength(signal, targetLength, (ele1, ele2) -> ele1.add(ele2).divide(2));
     }
+
+    /**
+     * Pads the signal at the start with it's mirror image
+     * eg. 1, 2, 3 with padLength 2 will be 2, 1, 1, 2, 3
+     * @param signal
+     * @param padLength
+     * @return new Array of length inputLength + padLength
+     */
+    public static Complex[] symmetricPrePadding(Complex[] signal, int padLength) {
+        if (padLength > signal.length) {
+            throw new IllegalArgumentException("Cannot add symmetric padding longer than signal");
+        }
+        Complex[] result = new Complex[signal.length + padLength];
+        for (int i = 0; i < padLength; i++) {
+            result[padLength - 1 - i] = signal[i];
+        }
+        System.arraycopy(signal, 0, result, padLength, signal.length);
+        return result;
+    }
+
+    /**
+     * Pads the signal at the end with it's mirror image
+     * eg. 1, 2, 3 with padLength 2 will be 1, 2, 3, 3, 2
+     * @param signal
+     * @param padLength
+     * @return new Array of length inputLength + padLength
+     */
+    public static Complex[] symmetricPostPadding(Complex[] signal, int padLength) {
+        if (padLength > signal.length) {
+            throw new IllegalArgumentException("Cannot add symmetric padding longer than signal");
+        }
+        Complex[] result = new Complex[signal.length + padLength];
+        System.arraycopy(signal, 0, result, 0, signal.length);
+        for (int i = 0; i < padLength; i++) {
+            result[signal.length + i] = signal[signal.length - 1 - i];
+        }
+        return result;
+    }
+
+    /**
+     * Pads the signal at both the ends with it's mirror image
+     * eg. 1, 2, 3 with padLength 3 will be 2, 1, 1, 2, 3, 3
+     * @param signal
+     * @param padLength
+     * @return new Array of length inputLength + padLength
+     */
+    public static Complex[] symmetricPadding(Complex[] signal, int padLength) {
+        if (padLength > signal.length * 2) {
+            throw new IllegalArgumentException("Cannot add symmetric padding longer than signal");
+        }
+        int prePadLen = (int) Math.ceil(padLength / 2.0);
+        int postPadLen = (int) Math.floor(padLength / 2.0);
+        Complex[] paddedSignal = symmetricPrePadding(signal, prePadLen);
+        return symmetricPostPadding(paddedSignal, postPadLen);
+    }
 }
