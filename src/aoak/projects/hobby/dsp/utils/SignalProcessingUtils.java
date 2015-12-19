@@ -330,4 +330,21 @@ public class SignalProcessingUtils {
         Complex[] paddedSignal = symmetricPrePadding(signal, prePadLen);
         return symmetricPostPadding(paddedSignal, postPadLen);
     }
+
+    /**
+     * Wrapper around arrayCopy that discards part of the signal at both ends
+     * eg 1 2 3 4 5 with truncateLength 3 will be 3, 4
+     * @param signal
+     * @param truncateLength
+     * @return
+     */
+    public static Complex[] symmetricTruncate(Complex[] signal, int truncateLength) {
+        if ((truncateLength / 2) > signal.length) {
+            throw new IllegalArgumentException("Cannot add symmetric padding longer than signal");
+        }
+        Complex[] truncatedSignal = new Complex[signal.length - truncateLength];
+        int preTrunLen = (int) Math.ceil(truncateLength / 2.0);
+        System.arraycopy(signal, preTrunLen, truncatedSignal, 0, signal.length - truncateLength);
+        return truncatedSignal;
+    }
 }

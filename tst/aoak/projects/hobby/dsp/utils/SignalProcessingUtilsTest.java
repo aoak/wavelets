@@ -187,4 +187,12 @@ public class SignalProcessingUtilsTest {
             new Complex(3), new Complex(4), new Complex(5), new Complex(5)};
         Assert.assertArrayEquals(exp, symmetricPadding(s, 3));
     }
+
+    @Test
+    public void symmetricTruncateTest() {
+        Complex[] s = new Complex[] {new Complex(1), new Complex(2), new Complex(3), new Complex(4),
+            new Complex(5)};
+        Complex[] exp = new Complex[] {new Complex(3), new Complex(4)};
+        Assert.assertArrayEquals(exp, symmetricTruncate(s, 3));
+    }
 }
