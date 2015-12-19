@@ -26,7 +26,6 @@ public class WaveletTransform {
     /**
      * Calculate discrete wavelet transform by convolution and sub-sampling
      * with the input filter as low pass filter and it's QMF pair.
-     * TODO: Implement cascading
      * @param signal
      * @param lpFilter
      * @return
@@ -54,14 +53,14 @@ public class WaveletTransform {
      * @param numLevels
      * @return a two dimensional array of numLevels+1 x ... length
      */
-    public static Complex[][] cascadedDwt(Complex[] signal, Wavelet wavelet, int numLevels) {
+    public static Complex[][] waveletDecomposition(Complex[] signal, Wavelet wavelet, int numLevels) {
 
         int numPossibleDecompositions = (int) (Math.log10(signal.length)/Math.log10(2));
         if (numLevels > numPossibleDecompositions) {
             throw new IllegalArgumentException("Can't decompose more than " + numPossibleDecompositions + " times");
         }
         Complex[][] result = new Complex[numLevels+1][];
-        for (int i = 0; i < result.length; i++) {
+        for (int i = result.length - 1; i >= 1; i--) {
             Complex[][] decomposition = dwt(signal, wavelet);
             // preserve the details
             result[i] = decomposition[1];
@@ -69,7 +68,7 @@ public class WaveletTransform {
             signal = decomposition[0];
         }
         // the final stage approximation
-        result[result.length-1] = signal;
+        result[0] = signal;
         return result;
     }
 
@@ -100,10 +99,26 @@ public class WaveletTransform {
 
         Double[] hpFilter = getQMF(lpFilter);
 
-        approx = upsample(approx, 2);
-        details = upsample(details, 2);
+        approx = SignalProcessingUtils.upsampleWithInterpolation(approx, approx.length * 2);
+        details = SignalProcessingUtils.upsampleWithInterpolation(details, details.length * 2);
+        // approx = upsample(approx, 2);
+        // details = upsample(details, 2);
         Complex[] regeneratedSignal = ArrayUtils.merge(conv(approx, lpFilter), conv(details, hpFilter), (a, b) -> a.add(b));
         return regeneratedSignal;
+    }
+
+    public static Complex[] waveletReconstruction(Complex[][] transform, Wavelet wavelet) {
+
+        int numLevels = transform.length - 1;
+        if (numLevels == 0) {
+            throw new IllegalArgumentException("Invalid transform matrix");
+        }
+        Complex[] signal = transform[0];
+        for (int i = 1; i < transform.length; i++) {
+            Complex[] details = transform[i];
+            signal = iDwt(signal, details, wavelet);
+        }
+        return signal;
     }
 
     static Complex[] convolveAndSubsample(Complex[] signal, Double[] filter) {
