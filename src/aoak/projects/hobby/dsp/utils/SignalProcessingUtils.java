@@ -116,6 +116,29 @@ public class SignalProcessingUtils {
         return result;
     }
 
+    public static Complex[][] conv2d(Complex[][] signal, Double[][] filter) {
+        int Nr = signal.length;
+        int Nc = signal[0].length;
+        int Kr = filter.length;
+        int Kc = filter[0].length;
+
+        Complex[][] result = new Complex[Nr+Kr-1][Nc+Kc-1];
+        for (int i = 0; i < result.length; i++) {
+            ArrayUtils.mapInPlace(result[i], ele -> Complex.ZERO);
+        }
+
+        for (int nr = 0; nr < Nr + Kr - 1; nr++) {
+            for (int nc = 0; nc < Nc + Kc - 1; nc++) {
+                for (int kr = Math.max(0, nr-Nr+1); kr <= Math.min(nr, Kr-1); kr++) {
+                    for (int kc = Math.max(0, nc-Nc+1); kc <= Math.min(nc, Kc-1); kc++) {
+                        result[nr][nc] = result[nr][nc].add(signal[nr-kr][nc-kc].multiply(filter[kr][kc]));
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     /**
      * Compute cross correlation between two signals
      * @param signal1
