@@ -1,12 +1,14 @@
 package aoak.projects.hobby.dsp.utils;
 
-import static aoak.projects.hobby.dsp.utils.SignalProcessingUtils.*;
-import static org.junit.Assert.assertEquals;
-
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
 import org.apache.commons.math3.complex.Complex;
 import org.junit.Assert;
 import org.junit.Test;
+import static aoak.projects.hobby.dsp.utils.SignalProcessingUtils.*;
+import static org.junit.Assert.assertEquals;
 
 public class SignalProcessingUtilsTest {
 
@@ -59,25 +61,16 @@ public class SignalProcessingUtilsTest {
 
     @Test
     public void convolve2DTest() {
-        Complex[][] s = new Complex[3][];
-        s[0] = new Complex[] {new Complex(1), new Complex(3), new Complex(8)};
-        s[1] = new Complex[] {new Complex(7), new Complex(3), new Complex(4)};
-        s[2] = new Complex[] {new Complex(6), new Complex(5), new Complex(1)};
+        double[][] s = {{1, 3, 8}, {7, 3, 4}, {6, 5, 1}};
+        double[][] h = {{1, 1, 1}, {0, 0, 0}, {-1, -1, -1}};
 
-        Double[][] h = new Double[3][];
-        h[0] = new Double[] {1.0, 1.0, 1.0};
-        h[1] = new Double[] {0.0, 0.0, 0.0};
-        h[2] = new Double[] {-1.0, -1.0, -1.0};
+        double[][] e = {{1, 4, 12, 11, 8},
+                        {7, 10, 14, 7, 4},
+                        {5, 7, 0, -5, -7},
+                        {-7, -10, -14, -7, -4},
+                        {-6, -11, -12, -6, -1}};
 
-        Complex[][] e = new Complex[5][];
-        e[0] = new Complex[] {new Complex(1), new Complex(4), new Complex(12), new Complex(11), new Complex(8)};
-        e[1] = new Complex[] {new Complex(7), new Complex(10), new Complex(14), new Complex(7), new Complex(4)};
-        e[2] = new Complex[] {new Complex(5), new Complex(7), new Complex(0), new Complex(-5), new Complex(-7)};
-        e[3] = new Complex[] {new Complex(-7), new Complex(-10), new Complex(-14), new Complex(-7), new Complex(-4)};
-        e[4] = new Complex[] {new Complex(-6), new Complex(-11), new Complex(-12), new Complex(-6), new Complex(-1)};
-
-        Complex[][] result = conv2d(s, h);
-        Assert.assertArrayEquals(e, result);
+        Assert.assertArrayEquals(e, conv2d(s,h));
     }
 
     @Test
