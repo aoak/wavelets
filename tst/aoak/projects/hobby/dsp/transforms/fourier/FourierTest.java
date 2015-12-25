@@ -1,11 +1,16 @@
 package aoak.projects.hobby.dsp.transforms.fourier;
 
-import static org.junit.Assert.assertTrue;
-
+import aoak.projects.hobby.dsp.transforms.fourier.FourierTransform;
+import aoak.projects.hobby.dsp.utils.PlottingUtils;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.math3.complex.Complex;
 import org.junit.Test;
-
-import aoak.projects.hobby.dsp.transforms.fourier.FourierTransform;
+import static org.junit.Assert.assertTrue;
 
 public class FourierTest {
 
@@ -61,5 +66,19 @@ public class FourierTest {
         for (int i = 0; i < signal.length; i++) {
             assertTrue(Complex.equals(input[i], signal[i], 1E-3));
         }
+    }
+
+    @Test
+    public void longStftTest() throws IOException {
+         List<Complex> sigFile = Files.readAllLines((Paths.get("tst/aoak/projects/hobby/dsp/transforms/wavelet/data/sine.txt"))).
+                                     stream().
+                                     map(val -> new Complex(Double.valueOf(val))).
+                                     collect(Collectors.toList());
+         Complex[] signal = new Complex[sigFile.size()];
+         signal = sigFile.toArray(signal);
+         Complex[][] transform = FourierTransform.stft(signal, 16);
+         Complex[] recon = FourierTransform.inverseStft(transform);
+         PlottingUtils.savePlot(signal, "longSine");
+         PlottingUtils.savePlot(recon, "reconLongSine");
     }
 }

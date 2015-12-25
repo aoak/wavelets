@@ -1,5 +1,6 @@
 package aoak.projects.hobby.dsp.transforms.fourier;
 
+import aoak.projects.hobby.dsp.utils.ArrayUtils;
 import java.util.Arrays;
 import org.apache.commons.math3.complex.Complex;
 
@@ -79,9 +80,33 @@ public class FourierTransform {
         int numWindows = (int) Math.ceil(signal.length / (double) windowLen);
         Complex[][] transform = new Complex[numWindows][];
 
+        Complex[] hammingWindow = new Complex[windowLen];
+        for (int i = 0; i < hammingWindow.length; i++) {
+            hammingWindow[i] = new Complex(0.54 - (0.45 * Math.cos(2 * Math.PI * i / (windowLen - 1))));
+        }
         for (int i = 0, j = 0; i < signal.length; i += windowLen, j++) {
-            transform[j] = fft(Arrays.copyOfRange(signal, i, i + windowLen));
+            Complex[] sigWindow = ArrayUtils.merge(hammingWindow,
+                                                   Arrays.copyOfRange(signal, i, i + windowLen),
+                                                   (sig, win) -> sig.multiply(win));
+            transform[j] = fft(sigWindow);
         }
         return transform;
+    }
+
+    /**
+     * Compute inverse short time fourier transform from the metrics
+     * and join it to reconstruct original signal
+     * @param transform
+     * @return
+     */
+    public static Complex[] inverseStft(Complex[][] transform) {
+        Complex[] signal = new Complex[transform.length * transform[0].length];
+        int ind = 0;
+        for (int i = 0; i < transform.length; i++) {
+            Complex[] partialInverse = inverseFft(transform[i]);
+            System.arraycopy(partialInverse, 0, signal, ind, partialInverse.length);
+            ind += partialInverse.length;
+        }
+        return signal;
     }
 }
