@@ -1,5 +1,6 @@
 package aoak.projects.hobby.dsp.transforms.fourier;
 
+import java.util.Arrays;
 import org.apache.commons.math3.complex.Complex;
 
 /**
@@ -65,5 +66,22 @@ public class FourierTransform {
             result[k + N/2] = e[k].subtract((o[k].multiply(Wk_N)));
         }
         return result;
+    }
+
+    /**
+     * Compute short time fourier transform of input signal split
+     * into non overlapping windows of length windowLen
+     * @param signal
+     * @param windowLen
+     * @return
+     */
+    public static Complex[][] stft(Complex[] signal, int windowLen) {
+        int numWindows = (int) Math.ceil(signal.length / (double) windowLen);
+        Complex[][] transform = new Complex[numWindows][];
+
+        for (int i = 0, j = 0; i < signal.length; i += windowLen, j++) {
+            transform[j] = fft(Arrays.copyOfRange(signal, i, i + windowLen));
+        }
+        return transform;
     }
 }
